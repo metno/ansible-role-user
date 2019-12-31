@@ -1,6 +1,6 @@
 # vim: set et ai ts=2 st=2 sw=2:
 ---
-image: registry.ik.met.no:5005/docker/ansible-alpine:latest
+image: alpine:3.10
 
 variables:
   ANSIBLE_FORCE_COLOR: "true"
@@ -11,6 +11,8 @@ stages:
 ansible-lint:
   stage: lint
   script:
+    - apk update
+    - apk add ansible-lint
     - ansible-lint -x 204,503,701 -v .
   only:
     refs:
@@ -19,4 +21,4 @@ ansible-lint:
     changes:
       - "*yml"
   tags:
-    - ansible
+    - dind
