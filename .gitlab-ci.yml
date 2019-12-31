@@ -1,0 +1,22 @@
+# vim: set et ai ts=2 st=2 sw=2:
+---
+image: registry.ik.met.no:5005/docker/ansible-alpine:latest
+
+variables:
+  ANSIBLE_FORCE_COLOR: "true"
+
+stages:
+  - lint
+
+ansible-lint:
+  stage: lint
+  script:
+    - ansible-lint -x 204,503,701 -v .
+  only:
+    refs:
+      - pushes
+      - merges
+    changes:
+      - "*yml"
+  tags:
+    - ansible

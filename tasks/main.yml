@@ -1,0 +1,82 @@
+# vim: ai et ts=2 st=2 sw=2 :
+---
+- name: check if we're running supported os
+  assert:
+    fail_msg: "{{ role_name }} only supports ubuntu versions 12, 14, 16, 18 and centos versions 6, 7!"
+    success_msg: "{{ role_name }} supports {{ ansible_distribution }} version {{ ansible_distribution_version }}"
+    quiet: "{{ not ansible_check_mode }}"
+    that:
+      ( ansible_distribution == "Ubuntu" and ansible_distribution_version|int in [12, 14, 16, 18] )
+      or ( ansible_distribution == "CentOS" and ansible_distribution_major_version|int in [6, 7, 8] )
+
+- name: list of enabled users
+  set_fact:
+    enabled_users: '{{ user_users | selectattr("enabled", "defined") | selectattr("enabled") | list }}'
+
+- name: python selinux module
+  yum:
+    name: libselinux-python
+  when:
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version|int == 6
+
+- name: find bash
+  command: which bash
+  changed_when: false
+  register: bash_command
+
+- name: create groups
+  group:
+    name: '{{ item.group | default(item.user) }}'
+    gid: '{{ item.gid | default(omit) }}'
+    system: '{{ item.system | default(false) }}'
+  loop: '{{ enabled_users }}'
+
+- name: create users
+  user:
+    comment: '{{ item.comment | default("") }}'
+    create_home: '{{ item.create_home | default(true) }}'
+    group: '{{ item.group | default(item.user) }}'
+    groups: '{{ item.groups | default([]) }}'
+    name: '{{ item.user }}'
+    password: '{{ item.password | default("") }}'
+    remove: '{{ item.remove | default(false) }}'
+    shell: '{{ item.shell | default(bash_command.stdout) }}'
+    state: '{{ "present" if item.enabled | default(false) else "absent" }}'
+    system: '{{ item.system | default(false) }}'
+    uid: '{{ item.uid | default(omit) }}'
+  loop: '{{ user_users }}'
+
+- name: does users exist
+  getent:
+    database: passwd
+    key: '{{ item.user }}'
+  ignore_errors: true
+  register: getent_users
+  loop: '{{ user_users }}'
+
+- name: add authorized_keys for users
+  authorized_key:
+    user: '{{ item.item.user }}'
+    key: '{{ item.item.key | default("") }}'
+    key_options: "{{ item.item.restrict|default(user_default_restrict) + ( '' if item.item.allow_ips|default(user_default_allow_ips)|length < 1 else ',from=\"' + item.item.allow_ips|default(user_default_allow_ips) | join(',') + '\"' ) }}"
+    state: '{{ "present" if item.item.enabled | default(false) else "absent" }}'
+    manage_dir: true
+    exclusive: true
+  loop: '{{ getent_users.results | selectattr("failed", "eq", false) | list }}'
+
+- name: enable or disable sudo for users
+  template:
+    src: 'sudo{{ "-password" if item.enable_sudo_password | default(false) else "" }}.j2'
+    dest: '/etc/sudoers.d/{{ item.user }}'
+    mode: 0440
+    owner: root
+    group: root
+    validate: 'bash -c "cat %s | visudo -cf-"'
+  loop: '{{ user_users | selectattr("sudo", "defined") | selectattr("sudo") | list }}'
+
+- name: remove or keep sudoers files
+  file:
+    path: '/etc/sudoers.d/{{ item.user }}'
+    state: '{{ "file" if item.sudo | default(false) else "absent" }}'
+  loop: '{{ user_users }}'

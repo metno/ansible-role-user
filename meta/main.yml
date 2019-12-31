@@ -1,0 +1,31 @@
+galaxy_info:
+  author: IT infrastructure
+  description: Configure users
+  company: MET Norway
+
+  issue_tracker_url: https://git.ik.met.no/ansible-roles/users/issues
+
+  license: GPL-2.0-or-later
+
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: Ubuntu
+    versions:
+      - 12.04
+      - 14.04
+      - 16.04
+      - 18.04
+  - name: CentOS
+    versions:
+      - 6
+      - 7
+      - 8
+
+  galaxy_tags:
+    - users
+    - ssh
+    - password
+
+dependencies: []
+
