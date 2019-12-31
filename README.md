@@ -52,7 +52,7 @@ Role Variables
     * `groups` --- list of extra groups for the user, default `[]`
     * `group` --- users main group, default username
     * `key` --- file with one ssh key on each line, default `''`
-    * `password` --- set password hash for user - , default `""`
+    * `password` --- set password hash for user - create new password with `mkpasswd -m sha512crypt`, default `""`
     * `remove` --- remove user files when `enabled == false`, default `false`
     * `restrict` --- subset of restrictions, default `user_default_restrict`
     * `shell` --- set user default shell, default `bash`
