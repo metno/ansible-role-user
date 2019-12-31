@@ -40,6 +40,7 @@
     groups: '{{ item.groups | default([]) }}'
     name: '{{ item.user }}'
     password: '{{ item.password | default("") }}'
+    password_lock: '{{ true if item.password | default("") == "" else false }}'
     remove: '{{ item.remove | default(false) }}'
     shell: '{{ item.shell | default(bash_command.stdout) }}'
     state: '{{ "present" if item.enabled | default(false) else "absent" }}'
@@ -63,6 +64,7 @@
     state: '{{ "present" if item.item.enabled | default(false) else "absent" }}'
     manage_dir: true
     exclusive: true
+    comment: Ansible managed
   loop: '{{ getent_users.results | selectattr("failed", "eq", false) | list }}'
 
 - name: enable or disable sudo for users

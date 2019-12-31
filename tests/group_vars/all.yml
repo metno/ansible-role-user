@@ -1,0 +1,45 @@
+user_users:
+  - user: sysuser1
+    create_home: false
+    enabled: true
+    system: true
+  - user: sysuser2
+    create_home: true
+    enabled: true
+    system: true
+  - user: user1
+    comment: User Name,Building and room or contact person,Office Phone,Home Phone,Email
+    enabled: true
+  - user: user1
+    enabled: false
+    remove: true
+  - user: user2
+    comment: User Name,Building and room or contact person,Office Phone,Home Phone,Email
+    enabled: true
+    group: usergroup2
+    groups: adm,users
+    gid: 2000
+    uid: 2000
+    allow_ips:
+      - 10.0.0.0/8
+      - 192.168.1.0/24
+    key: |
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHkCVF05JvfkrfOOESivOxV4N8+A/EMEkF7/nCQMRoQg
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINy/2ldIkVhcgUAF3XkMyjfhXxuMHn0yK/1vqJwXFiue
+    shell: /bin/sh
+    restrict: restrict,X11-forwarding,pty
+    # password 'user2'
+    password: $6$W7eiMn9W7lWln0ea$H7Ys/saS9vPt4ng.dKQeExzbR8tFTIOn/MZ.C7HmVCsL..5SDHgnX4lvAE6JjQjCou2fcUPgkwQ1qInySeoMp.
+    sudo: true
+    enable_sudo_password: true
+  - user: user3
+    enabled: true
+    key: |
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMFqjOZQuNPahtMmEWocMpW1oN7sukT+PmcWSqFdmSaj
+    sudo: true
+
+user_users_custom:
+  - user: user4
+    key: |
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINWIFe749/NkJcpEW1H8DtUJrnbNdvexBPiEeXyp6/uY
+    enabled: true

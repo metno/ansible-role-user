@@ -15,6 +15,7 @@ This role configures the following.
 Version
 -------
 
+* `1.0.0` --- initial version
 * `master` --- latest development version
 
 Requirements
@@ -41,13 +42,13 @@ Role Variables
     * `restrict` --- limit all, always use first
     * `X11-forwarding` --- allow X forwarding
     * See other options with `man sshd`
-* `user_users` --- list of dicts with all root users, default `[]`. Dict list elements is defined as following
+* `user_users` --- list of dicts with all users, default `[]`. Dict list elements is defined as following
     * `allow_ips` --- list of source ip addresses, default `user_default_allow_ips`
     * `comment` --- user GECOS, default `""`
     * `create_home` --- create home directory, default `true`
     * `enabled` --- is the user enabled or not, default `false`
     * `enable_sudo_password` --- enable password check on sudo - use with `sudo`, default `false`
-    * `gid` --- GID value as integer, default autogenerate
+    * `gid` --- GID value as integer, default auto generate
     * `groups` --- list of extra groups for the user, default `[]`
     * `group` --- users main group, default username
     * `key` --- file with one ssh key on each line, default `''`
@@ -57,8 +58,8 @@ Role Variables
     * `shell` --- set user default shell, default `bash`
     * `sudo` --- enable password less sudo for user, default `false`
     * `system` --- is user a system user, default `false`
-    * `uid` --- UID value as integer, default autogenerate
-    * `user` --- linux username, __required__
+    * `uid` --- UID value as integer, default auto generate
+    * `user` --- Linux username, __required__
 
 Dependencies
 ------------
@@ -72,29 +73,49 @@ Variables are kept in the `host_vars` or `group_vars` folder usually. Defining e
 
     - hosts: servers
       vars:
-      roles:
-        - role: met-root
-          met_root_allow_ips:
+      roles: user
+      user_default_allow_ips:
+        - 0.0.0.0/0
+      user_default_restrict: restrict,pty
+      user_users:
+        - user: sysuser1
+          create_home: false
+          enabled: true
+          system: true
+        - user: sysuser2
+          create_home: true
+          enabled: true
+          system: true
+        - user: user1
+          comment: User Name,Building and room or contact person,Office Phone,Home Phone,Email
+          enabled: true
+        - user: user1
+          enabled: false
+          remove: true
+        - user: user2
+          comment: User Name,Building and room or contact person,Office Phone,Home Phone,Email
+          enabled: true
+          group: usergroup2
+          groups: adm,users
+          gid: 2000
+          uid: 2000
+          allow_ips:
             - 10.0.0.0/8
-            - 172.16.0.0/24
-            - 192.168.1.2
-          met_root_restrict: restrict,pty
-          met_root_users:
-            - user: ansible
-              key: |
-                ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHkCVF05JvfkrfOOESivOxV4N8+A/EMEkF7/nCQMRoQg
-              enabled: true
-            - user: aheimsbakk
-              key: |
-                ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCyLO8A5/7+Ckyl5REO5RpVg1Hpm4t9oM+Rum6k9W8fr6MqgpbJuDJ9mmb5AsoaL80J62mvZQZqXqYCtAfL7ZXMcZZiFwbhpdwRehFfR8vDjae4P4AooV7Vk99I1jvumes1z/FQMvue27lromgMejq/GcEAndlY9smYuQXLy3ajUw3dV+w4rm4L3+Qbps1lft8PZU/G0FMMqqTIPPdcLOLgD/d/625RhVtwqx0C/z3fykylFJ4RkWYQK5p0F/BO8Rr1un7AWYl2ITnOpxe99B9YfE2GI9sTvFAp221cEiozRPBIGJIa1JoZl+tDzb4XbF27Zjs3+6ywbSC5nrIW5gArlgavwKd+fL6vyDJXD+NM86QcGZvlhnMr4wanfHo6JVnekgbxWVaag/JY+yVO3RVZ/VdN+4nF1PXyjmdaLGebUrTDCh2JiPmSZ5Q7y9oyH5/ayJnGxVGCN/d8RK1So2UUhkWV+Z4J22yc2PEc1RD7HyLEI1t9WCT6nciY/t5it2E=
-              allow_ips:
-                - 0.0.0.0/0
-              restrict: restrict,pty,agent-forwarding
-              enabled: true
-          met_root_users_limit:
-            - aheimsbakk
-          met_root_users_always:
-            - ansible
+            - 192.168.1.0/24
+          key: |
+            ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHkCVF05JvfkrfOOESivOxV4N8+A/EMEkF7/nCQMRoQg
+            ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINy/2ldIkVhcgUAF3XkMyjfhXxuMHn0yK/1vqJwXFiue
+          shell: /bin/sh
+          restrict: restrict,X11-forwarding,pty
+          # password 'user2'
+          password: $6$W7eiMn9W7lWln0ea$H7Ys/saS9vPt4ng.dKQeExzbR8tFTIOn/MZ.C7HmVCsL..5SDHgnX4lvAE6JjQjCou2fcUPgkwQ1qInySeoMp.
+          sudo: true
+          enable_sudo_password: true
+        - user: user3
+          enabled: true
+          key: |
+            ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMFqjOZQuNPahtMmEWocMpW1oN7sukT+PmcWSqFdmSaj
+          sudo: true
 
 ### Add custom values in recipe
 
@@ -104,18 +125,18 @@ Append to default lists in `group_vars` or `host_vars`.
 
 * In `group_vars` or `host_vars`.
     ```
-    met_root_users_custom:
-      - user: sverrest
+    user_users_custom:
+      - user: user4
         key: |
-          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHkCVF05JvfkrfOOESivOxV4a8+A/EMEkF7/nCQMRoQg
+          ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINWIFe749/NkJcpEW1H8DtUJrnbNdvexBPiEeXyp6/uY
         enabled: true
     ```
 * In playbook, merge defaults with your custom values.
     ```
     pre_tasks:
-      - name: add custom met_root_users
+      - name: add custom user_users
         set_fact:
-          met_root_users: '{{ met_root_users + met_root_users_custom|default([]) }}'
+          user_users: '{{ user_users + user_users_custom|default([]) }}'
     ```
 
 Testing
