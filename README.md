@@ -1,7 +1,7 @@
 user
 ====
 
-Configure local system and normal users.
+Configure system and normal users.
 
 This role configures the following.
 
