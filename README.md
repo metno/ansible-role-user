@@ -15,6 +15,7 @@ This role configures the following.
 Version
 -------
 
+* `1.1.2` --- default to hard coded `/bin/bash` if `shell` is undefined
 * `1.1.1` --- remove unused issue tracker from meta
 * `1.1.0` --- set `user_default_restrict` to an empty string
 * `1.0.0` --- initial version

@@ -20,11 +20,6 @@
     - ansible_distribution == "CentOS"
     - ansible_distribution_major_version|int == 6
 
-- name: find bash
-  command: which bash
-  changed_when: false
-  register: bash_command
-
 - name: create groups
   group:
     name: '{{ item.group | default(item.user) }}'
@@ -42,7 +37,7 @@
     password: '{{ item.password | default("") }}'
     password_lock: '{{ true if item.password | default("") | length == 0 else false }}'
     remove: '{{ item.remove | default(false) }}'
-    shell: '{{ item.shell | default(bash_command.stdout) }}'
+    shell: '{{ item.shell | default("/bin/bash") }}'
     state: '{{ "present" if item.enabled | default(false) else "absent" }}'
     system: '{{ item.system | default(false) }}'
     uid: '{{ item.uid | default(omit) }}'
