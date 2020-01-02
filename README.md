@@ -15,6 +15,7 @@ This role configures the following.
 Version
 -------
 
+* `1.1.3` --- fixed unnecessary password updates
 * `1.1.2` --- default to hard coded `/bin/bash` if `shell` is undefined
 * `1.1.1` --- remove unused issue tracker from meta
 * `1.1.0` --- set `user_default_restrict` to an empty string
@@ -55,7 +56,7 @@ Role Variables
     * `groups` --- list of extra groups for the user, default `[]`
     * `group` --- users main group, default username
     * `key` --- file with one ssh key on each line, default `''`
-    * `password` --- set password hash for user - create new password with `mkpasswd -m sha512crypt`, default `""`
+    * `password` --- set password hash for user - create new password with `mkpasswd -m sha512crypt`, default not set
     * `remove` --- remove user files when `enabled == false`, default `false`
     * `restrict` --- subset of restrictions, default `user_default_restrict`
     * `shell` --- set user default shell, default `bash`
