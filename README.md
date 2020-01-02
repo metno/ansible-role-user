@@ -15,6 +15,7 @@ This role configures the following.
 Version
 -------
 
+* `1.1.0` --- set `user_default_restrict` to an empty string
 * `1.0.0` --- initial version
 * `master` --- latest development version
 
@@ -35,7 +36,7 @@ Role Variables
 --------------
 
 * `user_default_allow_ips` --- list of source ip addresses, default `[]`
-* `user_default_restrict` --- comma separated string with restrictions for login, default `restrict,pty`. Available restrictions
+* `user_default_restrict` --- comma separated string with restrictions for login, default `""`. Available restrictions
     * `agent-forwarding` --- allow forward SSH agent
     * `port-forwarding` --- allow port forwarding
     * `pty` --- allow tty
