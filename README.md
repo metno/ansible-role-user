@@ -15,6 +15,7 @@ This role configures the following.
 Version
 -------
 
+* `1.1.4` --- do not try to remove sudoers file in `check_mode`
 * `1.1.3` --- fixed unnecessary password updates
 * `1.1.2` --- default to hard coded `/bin/bash` if `shell` is undefined
 * `1.1.1` --- remove unused issue tracker from meta

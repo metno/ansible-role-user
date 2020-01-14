@@ -77,3 +77,4 @@
     path: '/etc/sudoers.d/{{ item.user }}'
     state: '{{ "file" if item.sudo | default(false) else "absent" }}'
   loop: '{{ user_users }}'
+  when: not ansible_check_mode
