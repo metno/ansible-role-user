@@ -3,7 +3,7 @@ galaxy_info:
   description: Configure users
   company: MET Norway
 
-  license: GPL-2.0-or-later
+  license: GPLv2
 
   min_ansible_version: 2.4
 
