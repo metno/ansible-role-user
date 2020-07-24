@@ -15,6 +15,7 @@ This role configures the following.
 Version
 -------
 
+* `1.2.0` --- updated with ubuntu focal
 * `1.1.6` --- tested with Ansible 2.9.11
 * `1.1.5` --- prepare for github
 * `1.1.4` --- do not try to remove sudoers file in `check_mode`
@@ -34,6 +35,7 @@ This role is limited to:
 * Ubuntu 14.04
 * Ubuntu 16.04
 * Ubuntu 18.04
+* Ubuntu 20.04
 * CentOS 6
 * CentOS 7
 * CentOS 8

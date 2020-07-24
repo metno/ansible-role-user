@@ -14,6 +14,7 @@ galaxy_info:
       - 14.04
       - 16.04
       - 18.04
+      - 20.04
   - name: CentOS
     versions:
       - 6
