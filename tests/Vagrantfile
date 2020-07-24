@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
         vb.cpus = 2
         vb.linked_clone = true
         # Workaround for Ubuntu Cloud init VMs (focal)
-        # Create virtual serial port, output to file serial-output.OS.
+        # Create virtual serial port, output to file console-output.OS.
         vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
         vb.customize ["modifyvm", :id, "--uartmode1", "file", "#{CURRENT_PATH}/console-output.#{opts[:name]}"]
       end
