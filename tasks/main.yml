@@ -22,6 +22,14 @@
 
 - name: create groups
   group:
+    name: '{{ item.group }}'
+    gid: '{{ item.gid | default(omit) }}'
+    system: '{{ item.system | default(false) }}'
+    state: '{{ "present" if item.enabled | default(false) else "absent" }}'
+  loop: '{{ user_groups }}'
+
+- name: create user group
+  group:
     name: '{{ item.group | default(item.user) }}'
     gid: '{{ item.gid | default(omit) }}'
     system: '{{ item.system | default(false) }}'

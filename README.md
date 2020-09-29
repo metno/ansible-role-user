@@ -1,10 +1,9 @@
 user
 ====
 
-Configure system and normal users.
+Configure system and normal groups and users. This role configures the following. Groups are created before users.
 
-This role configures the following.
-
+* Creates or removes groups.
 * Creates user and user group.
 * Disable or removes a user.
 * Set user SSH `authorized_keys`.
@@ -31,7 +30,6 @@ Requirements
 
 This role is limited to:
 
-* Ubuntu 12.04
 * Ubuntu 14.04
 * Ubuntu 16.04
 * Ubuntu 18.04
@@ -51,6 +49,11 @@ Role Variables
     * `restrict` --- limit all, always use first
     * `X11-forwarding` --- allow X forwarding
     * See other options with `man sshd`
+* `user_groups` --- list of dicts with all groups, default `[]`. Dict elements is defined as following
+    * `enabled` --- is the group enabled or not, default `false`
+    * `gid` --- GID value as integer, default auto generate
+    * `group` --- Linux group name, __required__
+    * `system` --- is the group a system grou, default `false`
 * `user_users` --- list of dicts with all users, default `[]`. Dict list elements is defined as following
     * `allow_ips` --- list of source ip addresses, default `user_default_allow_ips`
     * `comment` --- user GECOS, default `""`
@@ -68,7 +71,7 @@ Role Variables
     * `sudo` --- enable password less sudo for user, default `false`
     * `system` --- is user a system user, default `false`
     * `uid` --- UID value as integer, default auto generate
-    * `user` --- Linux username, __required__
+    * `user` --- Linux user name, __required__
 
 Dependencies
 ------------

@@ -1,3 +1,19 @@
+user_groups:
+  - group: g1
+    enabled: true
+  - group: g2
+    system: true
+    enabled: true
+  - group: g3
+    gid: 4000
+    enabled: true
+  - group: g4
+    system: true
+    gid: 555
+    enabled: true
+  - group: g1
+    enabled: false
+
 user_users:
   - user: sysuser1
     create_home: false
