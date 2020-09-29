@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `1.4.0` --- added possibility for creating and removing groups
 * `1.3.0` --- remove ubuntu precise from testing
 * `1.2.0` --- updated with ubuntu focal
 * `1.1.6` --- tested with Ansible 2.9.11
