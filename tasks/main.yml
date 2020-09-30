@@ -50,6 +50,7 @@
     system: '{{ item.system | default(false) }}'
     uid: '{{ item.uid | default(omit) }}'
   loop: '{{ user_users }}'
+  ignore_errors: '{{ ansible_check_mode }}'
 
 - name: does users exist
   getent:

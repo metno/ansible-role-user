@@ -91,6 +91,15 @@ Variables are kept in the `host_vars` or `group_vars` folder usually. Defining e
       user_default_allow_ips:
         - 0.0.0.0/0
       user_default_restrict: restrict,pty
+      user_groups:
+        - group: g1
+          enabled: true
+        - group: g2
+          system: true
+          enabled: true
+        - group: g3
+          gid: 4000
+          enabled: true
       user_users:
         - user: sysuser1
           create_home: false
@@ -110,7 +119,9 @@ Variables are kept in the `host_vars` or `group_vars` folder usually. Defining e
           comment: User Name,Building and room or contact person,Office Phone,Home Phone,Email
           enabled: true
           group: usergroup2
-          groups: adm,users
+          groups:
+            - adm
+            - users
           gid: 2000
           uid: 2000
           allow_ips:
