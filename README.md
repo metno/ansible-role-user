@@ -1,10 +1,9 @@
 user
 ====
 
-Configure system and normal users.
+Configure system and normal groups and users. This role configures the following. Groups are created before users.
 
-This role configures the following.
-
+* Creates or removes groups.
 * Creates user and user group.
 * Disable or removes a user.
 * Set user SSH `authorized_keys`.
@@ -15,6 +14,7 @@ This role configures the following.
 Version
 -------
 
+* `1.4.0` --- added option for creating and removing arbitrary groups
 * `1.3.0` --- remove ubuntu precise from testing
 * `1.2.0` --- updated with ubuntu focal
 * `1.1.6` --- tested with Ansible 2.9.11
@@ -51,6 +51,11 @@ Role Variables
     * `restrict` --- limit all, always use first
     * `X11-forwarding` --- allow X forwarding
     * See other options with `man sshd`
+* `user_groups` --- list of dicts with all groups, default `[]`. Dict elements is defined as following
+    * `enabled` --- is the group enabled or not, default `false`
+    * `gid` --- GID value as integer, default auto generate
+    * `group` --- Linux group name, __required__
+    * `system` --- is the group a system grou, default `false`
 * `user_users` --- list of dicts with all users, default `[]`. Dict list elements is defined as following
     * `allow_ips` --- list of source ip addresses, default `user_default_allow_ips`
     * `comment` --- user GECOS, default `""`
@@ -68,7 +73,7 @@ Role Variables
     * `sudo` --- enable password less sudo for user, default `false`
     * `system` --- is user a system user, default `false`
     * `uid` --- UID value as integer, default auto generate
-    * `user` --- Linux username, __required__
+    * `user` --- Linux user name, __required__
 
 Dependencies
 ------------
@@ -86,6 +91,15 @@ Variables are kept in the `host_vars` or `group_vars` folder usually. Defining e
       user_default_allow_ips:
         - 0.0.0.0/0
       user_default_restrict: restrict,pty
+      user_groups:
+        - group: g1
+          enabled: true
+        - group: g2
+          system: true
+          enabled: true
+        - group: g3
+          gid: 4000
+          enabled: true
       user_users:
         - user: sysuser1
           create_home: false
@@ -105,7 +119,9 @@ Variables are kept in the `host_vars` or `group_vars` folder usually. Defining e
           comment: User Name,Building and room or contact person,Office Phone,Home Phone,Email
           enabled: true
           group: usergroup2
-          groups: adm,users
+          groups:
+            - adm
+            - users
           gid: 2000
           uid: 2000
           allow_ips:

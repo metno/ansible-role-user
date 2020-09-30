@@ -1,3 +1,19 @@
+user_groups:
+  - group: g1
+    enabled: true
+  - group: g2
+    system: true
+    enabled: true
+  - group: g3
+    gid: 4000
+    enabled: true
+  - group: g4
+    system: true
+    gid: 555
+    enabled: true
+  - group: g1
+    enabled: false
+
 user_users:
   - user: sysuser1
     create_home: false
@@ -17,7 +33,10 @@ user_users:
     comment: User Name,Building and room or contact person,Office Phone,Home Phone,Email
     enabled: true
     group: usergroup2
-    groups: adm,users
+    groups:
+      - adm
+      - users
+      - g3
     gid: 2000
     uid: 2000
     allow_ips:
