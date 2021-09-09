@@ -10,15 +10,15 @@ galaxy_info:
   platforms:
   - name: Ubuntu
     versions:
-      - 12.04
-      - 14.04
       - 16.04
       - 18.04
       - 20.04
   - name: CentOS
     versions:
-      - 6
       - 7
+      - 8
+  - name: RHEL
+    versions:
       - 8
 
   galaxy_tags:
