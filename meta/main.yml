@@ -2,24 +2,26 @@ galaxy_info:
   author: IT infrastructure
   description: Configure users
   company: MET Norway
+  role_name: user
+  namespace: met
 
   license: GPLv2
 
   min_ansible_version: 2.4
 
   platforms:
-  - name: Ubuntu
-    versions:
-      - 16.04
-      - 18.04
-      - 20.04
-  - name: CentOS
-    versions:
-      - 7
-      - 8
-  - name: RHEL
-    versions:
-      - 8
+    - name: Ubuntu
+      versions:
+        - 16.04
+        - 18.04
+        - 20.04
+        - 22.04
+    - name: CentOS
+      versions:
+        - 7
+    - name: RHEL
+      versions:
+        - 8
 
   galaxy_tags:
     - users
@@ -27,4 +29,3 @@ galaxy_info:
     - password
 
 dependencies: []
-

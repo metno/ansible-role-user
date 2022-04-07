@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `1.6.0` --- added Jammy Removed CentOS8
 * `1.5.0` --- added RHEL8 Removed CentOS6 and Ubuntu 14.04
 * `1.4.0` --- added option for creating and removing arbitrary groups
 * `1.3.0` --- remove ubuntu precise from testing
@@ -36,8 +37,8 @@ This role is limited to:
 * Ubuntu 16.04
 * Ubuntu 18.04
 * Ubuntu 20.04
+* Ubuntu 22.04
 * CentOS 7
-* CentOS 8
 * RHEL 8
 
 Role Variables
