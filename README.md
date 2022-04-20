@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `1.6.1` --- bugfix
 * `1.6.0` --- added Jammy Removed CentOS8
 * `1.5.0` --- added RHEL8 Removed CentOS6 and Ubuntu 14.04
 * `1.4.0` --- added option for creating and removing arbitrary groups
