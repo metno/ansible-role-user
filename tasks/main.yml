@@ -66,9 +66,9 @@
     user: '{{ item.item.user }}'
     key: '{{ item.item.key | default("") }}'
     key_options: >-
-      {{ item.item.restrict|default(user_default_restrict) + ( '' if item.item.allow_ips|default(user_default_allow_ips)|length < 1
+      {{ item.item.restrict | default(user_default_restrict) + ( '' if item.item.allow_ips | default(user_default_allow_ips) | length < 1
       else
-      ',from="' + item.item.allow_ips|default(user_default_allow_ips) | join(',') + '"' ) }}
+      ',from="' + item.item.allow_ips | default(user_default_allow_ips) | join(',') + '"' ) }}
     state: '{{ "present" if item.item.enabled | default(false) else "absent" }}'
     manage_dir: true
     exclusive: true
