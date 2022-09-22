@@ -1,7 +1,7 @@
 # vim: ai et ts=2 st=2 sw=2 :
 ---
-- name: check if we're running supported os
-  assert:
+- name: Check if we're running supported os
+  ansible.builtin.assert:
     fail_msg: "{{ role_name }} only supports ubuntu versions 16, 18, 20, centos7 and rhel8!"
     success_msg: "{{ role_name }} supports {{ ansible_distribution }} version {{ ansible_distribution_version }}"
     quiet: "{{ not ansible_check_mode }}"
@@ -10,34 +10,34 @@
       or ( ansible_distribution == "CentOS" and ansible_distribution_major_version|int in [7] )
       or ( ansible_distribution|lower == "redhat" and ansible_distribution_major_version|int in [8] )
 
-- name: list of enabled users
-  set_fact:
+- name: List of enabled users
+  ansible.builtin.set_fact:
     enabled_users: '{{ user_users | selectattr("enabled", "defined") | selectattr("enabled") | list }}'
 
-- name: python selinux module
+- name: Python selinux module
   yum:
     name: libselinux-python
   when:
     - ansible_distribution == "CentOS"
     - ansible_distribution_major_version|int == 6
 
-- name: create groups
-  group:
+- name: Create groups
+  ansible.builtin.group:
     name: '{{ item.group }}'
     gid: '{{ item.gid | default(omit) }}'
     system: '{{ item.system | default(false) }}'
     state: '{{ "present" if item.enabled | default(false) else "absent" }}'
   loop: '{{ user_groups }}'
 
-- name: create user group
-  group:
+- name: Create user group
+  ansible.builtin.group:
     name: '{{ item.group | default(item.user) }}'
     gid: '{{ item.gid | default(omit) }}'
     system: '{{ item.system | default(false) }}'
   loop: '{{ enabled_users }}'
 
-- name: create users
-  user:
+- name: Create users
+  ansible.builtin.user:
     comment: '{{ item.comment | default("") }}'
     create_home: '{{ item.create_home | default(true) }}'
     group: '{{ item.group | default(item.user) }}'
@@ -53,30 +53,28 @@
   loop: '{{ user_users }}'
   ignore_errors: '{{ ansible_check_mode }}'
 
-- name: does users exist
-  getent:
+- name: Does users exist
+  ansible.builtin.getent:
     database: passwd
     key: '{{ item.user }}'
   ignore_errors: true
   register: getent_users
   loop: '{{ user_users }}'
 
-- name: add authorized_keys for users
-  authorized_key:
+- name: Add authorized_keys for users
+  ansible.posix.authorized_key:
     user: '{{ item.item.user }}'
     key: '{{ item.item.key | default("") }}'
     key_options: >-
-      {{ item.item.restrict | default(user_default_restrict) + ( '' if item.item.allow_ips | default(user_default_allow_ips) | length < 1
-      else
-      ',from="' + item.item.allow_ips | default(user_default_allow_ips) | join(',') + '"' ) }}
+      `{{ item.item.restrict | default(user_default_restrict) + ('' if item.item.allow_ips | default(user_default_allow_ips) | length < 1 else ',from="' + item.item.allow_ips | default(user_default_allow_ips) | join(',') + '"') }}`
     state: '{{ "present" if item.item.enabled | default(false) else "absent" }}'
     manage_dir: true
     exclusive: true
     comment: Ansible managed
   loop: '{{ getent_users.results | selectattr("failed", "eq", false) | list }}'
 
-- name: enable or disable sudo for users
-  template:
+- name: Enable or disable sudo for users
+  ansible.builtin.template:
     src: 'sudo{{ "-password" if item.enable_sudo_password | default(false) else "" }}.j2'
     dest: '/etc/sudoers.d/{{ item.user }}'
     mode: 0440
@@ -85,8 +83,8 @@
     validate: 'bash -c "cat %s | visudo -cf-"'
   loop: '{{ user_users | selectattr("sudo", "defined") | selectattr("sudo") | list }}'
 
-- name: remove or keep sudoers files
-  file:
+- name: Remove or keep sudoers files
+  ansible.builtin.file:
     path: '/etc/sudoers.d/{{ item.user }}'
     state: '{{ "file" if item.sudo | default(false) else "absent" }}'
     mode: 0440
