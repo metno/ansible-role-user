@@ -26,4 +26,7 @@ galaxy_info:
     - ssh
     - password
 
+collections:
+  - "ansible.posix"
+
 dependencies: []
