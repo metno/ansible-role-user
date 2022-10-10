@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `1.7.0` --- added RHEL9 and CentOS Stream 8 support
 * `1.6.2` --- removed extra slashes in `authorized_keys` when using `allow_ips`
 * `1.6.1` --- bugfix
 * `1.6.0` --- added Jammy Removed CentOS8
@@ -41,7 +42,9 @@ This role is limited to:
 * Ubuntu 20.04
 * Ubuntu 22.04
 * CentOS 7
+* CentOS Stream 8
 * RHEL 8
+* RHEL 9
 
 Role Variables
 --------------

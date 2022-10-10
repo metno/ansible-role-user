@@ -19,9 +19,11 @@ galaxy_info:
     - name: CentOS
       versions:
         - 7
+        - 8
     - name: RHEL
       versions:
         - 8
+        - 9
 
   galaxy_tags:
     - users
