@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `2.0.0` --- updated to ansible 2.12.9
 * `1.7.0` --- added RHEL9 and CentOS Stream 8 support
 * `1.6.2` --- removed extra slashes in `authorized_keys` when using `allow_ips`
 * `1.6.1` --- bugfix

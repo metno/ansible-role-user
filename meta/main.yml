@@ -7,27 +7,27 @@ galaxy_info:
 
   license: GPLv2
 
-  min_ansible_version: 2.4
+  min_ansible_version: 2.12
 
   platforms:
     - name: Ubuntu
       versions:
-        - 16.04
-        - 18.04
-        - 20.04
-        - 22.04
-    - name: CentOS
+        - "xenial"
+        - "bionic"
+        - "focal"
+        - "jammy"
+    - name: EL
       versions:
-        - 7
-        - 8
-    - name: RHEL
-      versions:
-        - 8
-        - 9
+        - "7"
+        - "8"
+        - "9"
 
   galaxy_tags:
     - users
     - ssh
     - password
+
+collections:
+  - "ansible.posix"
 
 dependencies: []
