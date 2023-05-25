@@ -59,7 +59,8 @@
     user: '{{ item.item.user }}'
     key: '{{ item.item.key | default("") }}'
     key_options: >-
-      `{{ item.item.restrict | default(user_default_restrict) + ('' if item.item.allow_ips | default(user_default_allow_ips) | length < 1 else ',from="' + item.item.allow_ips | default(user_default_allow_ips) | join(',') + '"') }}`
+      {{ item.item.restrict | default(user_default_restrict) + ('' if item.item.allow_ips | default(user_default_allow_ips) |
+      length < 1 else ',from="' + item.item.allow_ips | default(user_default_allow_ips) | join(',') + '"') }}
     state: '{{ "present" if item.item.enabled | default(false) else "absent" }}'
     manage_dir: true
     exclusive: true
@@ -70,7 +71,7 @@
   ansible.builtin.template:
     src: 'sudo{{ "-password" if item.enable_sudo_password | default(false) else "" }}.j2'
     dest: '/etc/sudoers.d/{{ item.user }}'
-    mode: 0440
+    mode: '0440'
     owner: root
     group: root
     validate: 'bash -c "cat %s | visudo -cf-"'
@@ -80,6 +81,6 @@
   ansible.builtin.file:
     path: '/etc/sudoers.d/{{ item.user }}'
     state: '{{ "file" if item.sudo | default(false) else "absent" }}'
-    mode: 0440
+    mode: '0440'
   loop: '{{ user_users }}'
   when: not ansible_check_mode

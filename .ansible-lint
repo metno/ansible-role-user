@@ -1,5 +1,2 @@
 skip_list:
-  - experimental
-  - yaml
-  - fqcn-builtins
-  - deprecated-module
+  - role-name
