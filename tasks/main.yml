@@ -71,7 +71,7 @@
   ansible.builtin.template:
     src: 'sudo{{ "-password" if item.enable_sudo_password | default(false) else "" }}.j2'
     dest: '/etc/sudoers.d/{{ item.user }}'
-    mode: 0440
+    mode: '0440'
     owner: root
     group: root
     validate: 'bash -c "cat %s | visudo -cf-"'
@@ -81,6 +81,6 @@
   ansible.builtin.file:
     path: '/etc/sudoers.d/{{ item.user }}'
     state: '{{ "file" if item.sudo | default(false) else "absent" }}'
-    mode: 0440
+    mode: '0440'
   loop: '{{ user_users }}'
   when: not ansible_check_mode
