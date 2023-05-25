@@ -1,11 +1,12 @@
 ---
-- hosts: all
-  become: yes
+- name: Test playbook
+  hosts: all
+  become: true
 
   pre_tasks:
-    - name: add custom user_users
-      set_fact:
-        user_users: '{{ user_users + user_users_custom|default([]) }}'
+    - name: Add custom user_users
+      ansible.builtin.set_fact:
+        user_users: '{{ user_users + user_users_custom | default([]) }}'
 
   roles:
     - role: ../../.
