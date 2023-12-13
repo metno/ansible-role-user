@@ -13,3 +13,18 @@
       user_default_allow_ips:
         - 0.0.0.0/0
       user_default_restrict: restrict,pty
+
+    - role: ../../.
+      user_groups: []
+      user_users:
+        - user: user2
+          enabled: true
+          password_nolock: true
+          allow_ips:
+            - 172.16.0.27/24
+
+        - user: user6
+          enabled: true
+          password_nolock: true
+          allow_ips:
+            - 172.16.0.27/24
