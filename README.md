@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `2.1.0` --- added `password_nolock`, for situations we're not changing password
 * `2.0.1` --- bug fix, ansible-lint
 * `2.0.0` --- updated to ansible 2.12.9
 * `1.7.0` --- added RHEL9 and CentOS Stream 8 support
@@ -75,6 +76,7 @@ Role Variables
     * `group` --- users main group, default username
     * `key` --- file with one ssh key on each line, default `''`
     * `password` --- set password hash for user - create new password with `mkpasswd -m sha512crypt`, default not set
+    * `password_nolock` --- don't lock password even if it is empty or not defined, default `false`
     * `remove` --- remove user files when `enabled == false`, default `false`
     * `restrict` --- subset of restrictions, default `user_default_restrict`
     * `shell` --- set user default shell, default `bash`
