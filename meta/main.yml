@@ -3,7 +3,7 @@ galaxy_info:
   description: Configure users
   company: MET Norway
   role_name: user
-  namespace: met
+  namespace: metno
 
   license: GPLv2
 
@@ -16,6 +16,7 @@ galaxy_info:
         - "bionic"
         - "focal"
         - "jammy"
+        - "noble"
     - name: EL
       versions:
         - "7"
