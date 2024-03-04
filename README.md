@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `2.2.0` --- added support for Ubuntu 24.04
 * `2.1.0` --- added `password_nolock`, for situations we're not changing password
 * `2.0.1` --- bug fix, ansible-lint
 * `2.0.0` --- updated to ansible 2.12.9
@@ -44,6 +45,7 @@ This role is limited to:
 * Ubuntu 18.04
 * Ubuntu 20.04
 * Ubuntu 22.04
+* Ubuntu 24.04
 * CentOS 7
 * CentOS Stream 8
 * RHEL 8
