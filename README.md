@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `3.0.0` --- Add Ansible-core 2.16. Removed support for Ubuntu xenial and bionic
 * `2.2.0` --- added support for Ubuntu 24.04
 * `2.1.0` --- added `password_nolock`, for situations we're not changing password
 * `2.0.1` --- bug fix, ansible-lint
@@ -200,6 +201,7 @@ GPLv2
 Author Information
 ------------------
 
-Arnulf Heimsbakk <aheimsbakk@met.no>
+Created 2020 by IT Infrastructure at MET Norway
+Contactpoint: [IT Infrastructure Basis Team](mailto:it-is-basis@met.no)
 
 ###### set vim: spell spelllang=en:
