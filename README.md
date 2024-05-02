@@ -201,6 +201,7 @@ GPLv2
 Author Information
 ------------------
 
-Arnulf Heimsbakk <aheimsbakk@met.no>
+Created 2020 by IT Infrastructure at MET Norway
+Contactpoint: [IT Infrastructure Basis Team](mailto:it-is-basis@met.no)
 
 ###### set vim: spell spelllang=en:
