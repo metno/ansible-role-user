@@ -1,0 +1,27 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: true
+
+  pre_tasks:
+    - name: Add custom user_users
+      ansible.builtin.set_fact:
+        user_users: '{{ user_users + user_users_custom | default([]) }}'
+
+  roles:
+    - name: metno.user
+      user_default_allow_ips:
+        - 0.0.0.0/0
+      user_default_restrict: restrict,pty
+      user_groups: []
+      user_users:
+        - user: user2
+          enabled: true
+          password_nolock: true
+          allow_ips:
+            - 172.16.0.27/24
+        - user: user6
+          enabled: true
+          password_nolock: true
+          allow_ips:
+            - 172.16.0.27/24

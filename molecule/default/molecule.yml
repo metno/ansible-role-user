@@ -1,0 +1,21 @@
+driver:
+  name: podman
+platforms:
+  - name: jammy
+    image: docker.io/ubuntu:jammy
+  - name: noble
+    image: docker.io/ubuntu:noble
+  - name: focal
+    image: docker.io/ubuntu:focal
+  - name: rhel8
+    image: docker.io/redhat/ubi8:8.9
+  - name: rhel9
+    image: docker.io/redhat/ubi9:9.4
+  - name: centos7
+    image: quay.io/centos/centos:centos7
+  - name: centos-8-stream
+    image: quay.io/centos/centos:stream8
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
