@@ -63,7 +63,7 @@
       length < 1 else ',from="' + item.item.allow_ips | default(user_default_allow_ips) | join(',') + '"') }}
     state: '{{ "present" if item.item.enabled | default(false) else "absent" }}'
     manage_dir: true
-    exclusive: true
+    exclusive: '{{ item.item.exclusive | default(true) }}'
     comment: Ansible managed
   loop: '{{ getent_users.results | selectattr("failed", "eq", false) | list }}'
 

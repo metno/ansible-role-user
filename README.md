@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `3.0.1` --- Make `exclusive` an option, not hardcoded.
 * `3.0.0` --- Add Ansible-core 2.16. Removed support for Ubuntu xenial and bionic
 * `2.2.0` --- added support for Ubuntu 24.04
 * `2.1.0` --- added `password_nolock`, for situations we're not changing password
@@ -78,6 +79,7 @@ Role Variables
     * `groups` --- list of extra groups for the user, default `[]`
     * `group` --- users main group, default username
     * `key` --- file with one ssh key on each line, default `''`
+    * `exclusive` --- remove ssh keys not listed here, default `true`
     * `password` --- set password hash for user - create new password with `mkpasswd -m sha512crypt`, default not set
     * `password_nolock` --- don't lock password even if it is empty or not defined, default `false`
     * `remove` --- remove user files when `enabled == false`, default `false`
@@ -143,6 +145,7 @@ Variables are kept in the `host_vars` or `group_vars` folder usually. Defining e
           key: |
             ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHkCVF05JvfkrfOOESivOxV4N8+A/EMEkF7/nCQMRoQg
             ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINy/2ldIkVhcgUAF3XkMyjfhXxuMHn0yK/1vqJwXFiue
+          exclusive: true
           shell: /bin/sh
           restrict: restrict,X11-forwarding,pty
           # password 'user2'
