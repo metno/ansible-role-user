@@ -3,3 +3,4 @@ user_default_allow_ips: []
 user_default_restrict: ""
 user_users: []
 user_groups: []
+user_authorized_keys_central_directory: false

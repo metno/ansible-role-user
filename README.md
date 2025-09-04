@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `3.1.0` --- Refactor and add support for root-owned authorized_keys
 * `3.0.1` --- Make `exclusive` an option, not hardcoded.
 * `3.0.0` --- Add Ansible-core 2.16. Removed support for Ubuntu xenial and bionic
 * `2.2.0` --- added support for Ubuntu 24.04
@@ -89,6 +90,7 @@ Role Variables
     * `system` --- is user a system user, default `false`
     * `uid` --- UID value as integer, default auto generate
     * `user` --- Linux user name, __required__
+* `user_authorized_keys_central_directory` --- Place ssh keys in `/etc/ssh/authorized_keys/%u` instead of `~/.ssh/authorized_keys`, default `false`
 
 Dependencies
 ------------
