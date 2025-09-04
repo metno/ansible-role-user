@@ -54,13 +54,13 @@
     database: passwd
     key: '{{ item.user }}'
   register: getent_users
-  failed_when: getent_users.failed == item.enabled|default(false)
+  failed_when: getent_users.failed == item.enabled | default(false)
   loop: '{{ user_users }}'
   loop_control:
     label: '{{ item.user }} ({% if item.enabled %}present{% else %}absent{% endif %})'
 
 - name: Create central directory for authorized_keys
-  when: user_authorized_keys_central_directory|default(false)
+  when: user_authorized_keys_central_directory | default(false)
   ansible.builtin.file:
     path: /etc/ssh/authorized_keys
     mode: '0750'
@@ -70,33 +70,33 @@
 - name: Write authorized_keys
   ansible.posix.authorized_key:
     user: >-
-      {%- if user_authorized_keys_central_directory|default(false) -%}
+      {%- if user_authorized_keys_central_directory | default(false) -%}
         root
       {%- else -%}
         {{ item.user }}
       {%- endif -%}
     key: '{{ item.key }}'
     path: >-
-      {%- if user_authorized_keys_central_directory|default(false) -%}
+      {%- if user_authorized_keys_central_directory | default(false) -%}
         /etc/ssh/authorized_keys/{{ item.user }}
       {%- else -%}
         {{ omit }}
       {%- endif -%}
-    key_options: >-
-      {{ item.restrict|default(user_default_restrict) }}
-      {%- if item.allow_ips|default(user_default_allow_ips)|length > 0 -%}
-        ,from={{'"' + item.allow_ips|default(user_default_allow_ips)|join(',') + '"' }}
+    key_options: |
+      {{ item.restrict | default(user_default_restrict) }}
+      {%- if item.allow_ips | default(user_default_allow_ips) | length > 0 -%}
+        ,from={{ '"' + item.allow_ips | default(user_default_allow_ips) | join(',') + '"' }}
       {%- endif -%}
     state: >-
-      {%- if item.enabled|default(false) -%}
+      {%- if item.enabled | default(false) -%}
         present
       {%- else -%}
         absent
       {%- endif -%}
-    manage_dir: '{{ not user_authorized_keys_central_directory|default(false) }}'
-    exclusive: '{{ item.exclusive|default(true) }}'
+    manage_dir: '{{ not user_authorized_keys_central_directory | default(false) }}'
+    exclusive: '{{ item.exclusive | default(true) }}'
     comment: >-
-      {%- if user_authorized_keys_central_directory|default(false) -%}
+      {%- if user_authorized_keys_central_directory | default(false) -%}
         {{ omit }}
       {%- else -%}
         Ansible managed
@@ -108,13 +108,13 @@
 - name: Remove or keep authorized_keys
   ansible.builtin.file:
     path: >-
-      {%- if user_authorized_keys_central_directory|default(false) -%}
+      {%- if user_authorized_keys_central_directory | default(false) -%}
         /etc/ssh/authorized_keys/{{ item.user }}
       {%- else -%}
         /home/{{ item.user }}/.ssh/authorized_keys
       {%- endif -%}
     state: >-
-      {%- if item.key|default(false) and item.enabled|default(false) -%}
+      {%- if item.key | default(false) and item.enabled | default(false) -%}
         file
       {%- else -%}
         absent
@@ -122,12 +122,12 @@
     mode: '0600'
   loop: '{{ user_users }}'
   loop_control:
-    label: '{{ item.user }} ({% if item.key|default(false) and item.enabled|default(false) %}keep{% else %}remove{% endif %})'
+    label: '{{ item.user }} ({% if item.key | default(false) and item.enabled | default(false) %}keep{% else %}remove{% endif %})'
   when: not ansible_check_mode
 
 - name: Enable sudo
   ansible.builtin.template:
-    src: 'sudo{% if item.enable_sudo_password|default(false) %}-password{% endif %}.j2'
+    src: 'sudo{% if item.enable_sudo_password | default(false) %}-password{% endif %}.j2'
     dest: '/etc/sudoers.d/{{ item.user }}'
     mode: '0440'
     owner: root
@@ -141,7 +141,7 @@
   ansible.builtin.file:
     path: '/etc/sudoers.d/{{ item.user }}'
     state: >-
-      {%- if item.sudo|default(false) and item.enabled|default(false) -%}
+      {%- if item.sudo | default(false) and item.enabled | default(false) -%}
         file
       {%- else -%}
         absent
@@ -149,5 +149,5 @@
     mode: '0440'
   loop: '{{ user_users }}'
   loop_control:
-    label: '{{ item.user }} ({% if item.sudo|default(false) and item.enabled|default(false) %}keep{% else %}remove{% endif %})'
+    label: '{{ item.user }} ({% if item.sudo | default(false) and item.enabled | default(false) %}keep{% else %}remove{% endif %})'
   when: not ansible_check_mode
