@@ -59,13 +59,25 @@
   loop_control:
     label: '{{ item.user }} ({% if item.enabled %}present{% else %}absent{% endif %})'
 
-- name: Create central directory for authorized_keys
+- name: Configure central directory for authorized_keys
   when: user_authorized_keys_central_directory | default(false)
-  ansible.builtin.file:
-    path: /etc/ssh/authorized_keys
-    mode: '0750'
-    owner: root
-    group: root
+  block:
+    - name: Create central directory for authorized_keys
+      ansible.builtin.file:
+        path: /etc/ssh/authorized_keys
+        mode: '0711'
+        owner: root
+        group: root
+
+    - name: Configure sshd
+      ansible.builtin.copy:
+        content: |
+          AuthorizedKeysFile /etc/ssh/authorized_keys/%u
+        dest: /etc/ssh/sshd_config.d/10-authorized_keys.conf
+        mode: '0600'
+        owner: root
+        group: root
+      notify: Restart sshd
 
 - name: Write authorized_keys
   ansible.posix.authorized_key:
@@ -82,11 +94,16 @@
       {%- else -%}
         {{ omit }}
       {%- endif -%}
-    key_options: |
-      {{ item.restrict | default(user_default_restrict) }}
-      {%- if item.allow_ips | default(user_default_allow_ips) | length > 0 -%}
-        ,from={{ '"' + item.allow_ips | default(user_default_allow_ips) | join(',') + '"' }}
-      {%- endif -%}
+    key_options: >-
+      {{ item.restrict | default(user_default_restrict) }}{%
+         if item.restrict | default(user_default_restrict) | length > 0
+           %},{%
+         endif
+      %}{%
+         if item.allow_ips | default(user_default_allow_ips) | length > 0
+           %}from={{ '"' + item.allow_ips | default(user_default_allow_ips) | sort | join(',') + '"' }}{%
+         endif
+      %}
     state: >-
       {%- if item.enabled | default(false) -%}
         present
@@ -119,7 +136,8 @@
       {%- else -%}
         absent
       {%- endif -%}
-    mode: '0600'
+    mode: "{%- if user_authorized_keys_central_directory | default(false) -%}0640{%- else -%}0600{%- endif -%}"
+    group: "{{ item.user }}"
   loop: '{{ user_users }}'
   loop_control:
     label: '{{ item.user }} ({% if item.key | default(false) and item.enabled | default(false) %}keep{% else %}remove{% endif %})'
