@@ -1,0 +1,6 @@
+# vim: ai et ts=2 st=2 sw=2 :
+---
+- name: Restart sshd
+  ansible.builtin.systemd_service:
+    state: restarted
+    name: '{% if ansible_os_family | lower == "debian" %}ssh{% else %}sshd{% endif %}'
