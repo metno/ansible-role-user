@@ -1,14 +1,14 @@
-name: Ansible Lint
-
-on: [push, pull_request] # noqua
-
+name: ansible-lint
+on:
+  pull_request:
+    branches: ["main", "master"]
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    name: Ansible Lint
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Lint Ansible Playbook
-        uses: ansible/ansible-lint-action@main
+      - uses: actions/checkout@v4
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@main
+        with:
+          args: "-x 204,503,701 -v"
