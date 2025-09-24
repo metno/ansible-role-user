@@ -1,21 +1,95 @@
 driver:
-  name: podman
+  name: vagrant
+  provider:
+    name: libvirt
+  provision: no
+  cachier: machine
+  parallel: true
+  default_box: 'metno/ubuntu-22.04'
+
 platforms:
-  - name: jammy
-    image: docker.io/ubuntu:jammy
   - name: noble
-    image: docker.io/ubuntu:noble
+    box: metno/ubuntu-24.04
+    box_url: https://vagrant.met.no/meta/ubuntu-24.04.json
+    memory: 2048
+    cpus: 2
+    instance_raw_config_args:
+      - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    provider_options:
+      qemu_use_session: true
+    groups:
+      - ubuntu
+  - name: jammy
+    box: metno/ubuntu-22.04
+    box_url: https://vagrant.met.no/meta/ubuntu-22.04.json
+    memory: 2048
+    cpus: 2
+    instance_raw_config_args:
+      - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    provider_options:
+      qemu_use_session: true
+    groups:
+      - ubuntu
   - name: focal
-    image: docker.io/ubuntu:focal
-  - name: rhel8
-    image: docker.io/redhat/ubi8:8.9
-  - name: rhel9
-    image: docker.io/redhat/ubi9:9.4
+    box: metno/ubuntu-20.04
+    box_url: https://vagrant.met.no/eol/ubuntu-20.04.json
+    memory: 2048
+    cpus: 2
+    instance_raw_config_args:
+      - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    provider_options:
+      qemu_use_session: true
+    groups:
+      - ubuntu
+  - name: rocky8
+    box: metno/rockylinux-8
+    box_url: https://vagrant.met.no/meta/rockylinux-8.json
+    memory: 2048
+    cpus: 2
+    instance_raw_config_args:
+      - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    provider_options:
+      qemu_use_session: true
+    groups:
+      - rocky
+  - name: rocky9
+    box: metno/rockylinux-9
+    box_url: https://vagrant.met.no/meta/rockylinux-9.json
+    memory: 2048
+    cpus: 2
+    instance_raw_config_args:
+      - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    provider_options:
+      qemu_use_session: true
+    groups:
+      - rocky
   - name: centos7
-    image: quay.io/centos/centos:centos7
-  - name: centos-8-stream
-    image: quay.io/centos/centos:stream8
+    box: metno/centos-7
+    box_url: https://vagrant.met.no/eol/centos-7.json
+    memory: 2048
+    cpus: 2
+    instance_raw_config_args:
+      - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    provider_options:
+      qemu_use_session: true
+    groups:
+      - centos
+  - name: centos8-stream
+    box: metno/centosstream-8
+    box_url: https://vagrant.met.no/eol/centosstream-8.json
+    memory: 2048
+    cpus: 2
+    instance_raw_config_args:
+      - 'vm.synced_folder ".", "/vagrant", disabled: true'
+    provider_options:
+      qemu_use_session: true
+    groups:
+      - centos
+
 provisioner:
   name: ansible
+  options:
+    user: root
+
 verifier:
   name: ansible

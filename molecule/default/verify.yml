@@ -1,0 +1,184 @@
+- name: Verify
+  become: true
+  hosts: all
+  gather_facts: false
+  vars:
+    users:
+      - name: sysuser1
+        groups:
+          - sysuser1
+      - name: sysuser2
+        groups:
+          - sysuser2
+      - name: user1
+        groups:
+          - user1
+      - name: user2
+        groups:
+          - usergroup2
+          - adm
+          - users
+    set_groups:
+      - g1
+      - g2
+      - g3
+
+  tasks:
+    - name: Check if a user exists and get their groups
+      ansible.builtin.command:
+        cmd: id -Gn {{ item.name }}
+      register: user_info
+      ignore_errors: true
+      loop: "{{ users }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Block Assert user
+      block:
+        - name: Assert that the user exists
+          ansible.builtin.assert:
+            that:
+              - item.rc == 0
+            fail_msg: "User {{ item.item.name }} does not exist!"
+            success_msg: "User {{ item.item.name }} exists."
+          with_items: "{{ user_info.results }}"
+          loop_control:
+            label: "{{ item.item.name }}"
+          no_log: true # Set to false to see all logs
+
+      always:
+        - name: Display users that does not exist
+          ansible.builtin.debug:
+            msg: "This user does not exist: {{ item.item.name }}"
+          loop: "{{ user_info.results }}"
+          loop_control:
+            label: "{{ item.item.name }}"
+          when: item.rc == 1
+
+    - name: Block Assert group exists
+      block:
+        - name: Assert that the user belongs to all expected groups
+          ansible.builtin.assert:
+            that:
+              - item.rc == 0
+              - item.item.groups | difference(item.stdout.split()) | length == 0
+            fail_msg: >
+              User {{ item.item.name }} does not belong to the expected groups!
+              Expected: {{ item.item.groups }},
+              Found: {{ item.stdout.split() }}
+            success_msg: >
+              User {{ item.item.name }} belongs to all expected groups.
+          with_items: "{{ user_info.results }}"
+          when: item.rc == 0
+          no_log: true # Set to false to see all logs
+
+      always:
+        - name: User exist, but is not in the correct groups
+          ansible.builtin.debug:
+            msg: >
+              User {{ item.item.name }} does not belong to the expected groups!
+              Expected: {{ item.item.groups }},
+              Found: {{ item.stdout.split() }}
+          with_items: "{{ user_info.results }}"
+          loop_control:
+            label: "{{ item.item.name }}"
+          when:
+            - item.rc == 0
+            - not item.item.groups | difference(item.stdout.split()) | length == 0
+
+    - name: Get the list of existing groups on the system
+      ansible.builtin.command:
+        cmd: getent group
+      register: existing_groups
+
+    - name: Parse the existing group names into a list
+      ansible.builtin.set_fact:
+        existing_group_names: "{{ existing_groups.stdout_lines | map('split', ':') | map('first') | list }}"
+
+    - name: Assert that all required groups exist
+      ansible.builtin.assert:
+        that:
+          - "set_groups | difference(existing_group_names) | length == 0"
+        fail_msg: "One or more required groups are missing: {{ set_groups | difference(existing_group_names) }}"
+        success_msg: "All required groups exist: {{ set_groups }}"
+
+    - name: Ensure each user has their specified SSH key(s)
+      block:
+        - name: Check if the SSH key exists for each user
+          ansible.builtin.shell: |
+            grep -F "{{ item.key.split('\n')[0].strip() }}" "/home/{{ item.user }}/.ssh/authorized_keys"
+          register: key_check_results
+          changed_when: false
+          failed_when: key_check_results.rc != 0
+          when: item.key is defined
+          with_items: "{{ user_users }}"
+          loop_control:
+            label: "{{ item.user }}"
+
+        - name: Check if the restrict parameter exists for each user
+          ansible.builtin.shell: |
+            grep -F "{{ (item.restrict | default(user_default_restrict)).strip() }}" "/home/{{ item.user }}/.ssh/authorized_keys"
+          register: restrict_check_results
+          changed_when: false
+          failed_when: restrict_check_results.rc != 0
+          when: item.key is defined
+          with_items: "{{ user_users }}"
+          loop_control:
+            label: "{{ item.user }}"
+          tags: never
+
+        - name: Check if restrict options match exactly for each key in the authorized_keys file
+          ansible.builtin.shell: |
+            restrict_options="{{ (item.restrict | default(user_default_restrict)).strip() }}"
+            authorized_keys_file="/home/{{ item.user }}/.ssh/authorized_keys"
+            normalized_restrict_options=$(echo "$restrict_options" | tr ',' '\n' | sort | tr '\n' ',' | sed 's/,$//')
+            while IFS= read -r line; do
+                key_options=$(echo "$line" | awk -F ' ' '{print $1}' | sed 's/from="[^"]*"//g' | sed 's/,,*/,/g' | sed 's/^,//' | sed 's/,$//' | tr ',' '\n' | sort | tr '\n' ',' | sed 's/,$//')
+                if [ "$key_options" != "$normalized_restrict_options" ]; then
+                    echo "Mismatch in restrict options for key: $line"
+                    echo "Expected (restrict_options): $normalized_restrict_options"
+                    echo "Found (key_options): $key_options"
+                    exit 1
+                fi
+            done < "$authorized_keys_file"
+          register: restrict_check_results
+          changed_when: false
+          failed_when: restrict_check_results.rc != 0
+          when: item.key is defined
+          with_items: "{{ user_users }}"
+          loop_control:
+            label: "{{ item.user }}"
+
+        - name: Check if the from parameter exists for each user
+          ansible.builtin.shell: |
+            grep -F "from=\"{{ item.allow_ips | default(user_default_allow_ips) | join(',') }}\"" "/home/{{ item.user }}/.ssh/authorized_keys"
+          register: from_check_results
+          changed_when: false
+          failed_when: from_check_results.rc != 0
+          when: item.key is defined and (item.allow_ips is defined or user_default_allow_ips is defined and user_default_allow_ips | length > 0)
+          with_items: "{{ user_users }}"
+          loop_control:
+            label: "{{ item.user }}"
+
+        - name: Calculate from_check_results condition
+          set_fact:
+            from_check_condition: >-
+              {{
+                (
+                  from_check_results.results | rejectattr('skipped', 'defined') | selectattr('rc', '==', 0) | list | length ==
+                  (user_users | selectattr('key', 'defined') | list | length)
+                )
+                if (user_default_allow_ips is defined and user_default_allow_ips | length > 0)
+                else True
+              }}
+
+        - name: Assert that all users with keys have their specified SSH key(s) and restrict parameters
+          ansible.builtin.assert:
+            that:
+              - key_check_results.results | rejectattr('skipped', 'defined') | selectattr('rc', '==', 0) | list | length ==
+                (user_users | selectattr('key', 'defined') | list | length)
+              - restrict_check_results.results | rejectattr('skipped', 'defined') | selectattr('rc', '==', 0) | list | length ==
+                (user_users | selectattr('key', 'defined') | list | length)
+              - from_check_condition
+            fail_msg: "One or more users do not have their specified SSH key(s) or restrict parameters."
+            success_msg: "All users with keys have their specified SSH key(s) and correct restrict parameters."
