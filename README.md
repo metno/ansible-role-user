@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `3.0.2` --- Move testing to Ansible Molecule
 * `3.0.1` --- Make `exclusive` an option, not hardcoded.
 * `3.0.0` --- Add Ansible-core 2.16. Removed support for Ubuntu xenial and bionic
 * `2.2.0` --- added support for Ubuntu 24.04
@@ -183,18 +184,26 @@ Append to default lists in `group_vars` or `host_vars`.
 Testing
 -------
 
-Testing the role with Vagrant running on VirtualBox.
+Testing is done using Ansible Molecule. It uses Vagrant with libvirt as backend.
 
-    cd tests
-    vagrant up
+To run full test run:
 
-Rerun tests.
+```bash
+molecule test
+```
 
-    vagrant provision
+To run test step by step run:
 
-Remove test VMs.
+```bash
+molecule create
+molecule converge
+molecule verify
+molecule destroy
+```
 
-    vagrant destroy -f
+To run toward specific scenario use `-s` option.
+```
+molecule test -s ubuntu
 
 License
 -------
