@@ -4,4 +4,3 @@ skip_list:
 exclude_paths:
   - .github
   - molecule/
-
