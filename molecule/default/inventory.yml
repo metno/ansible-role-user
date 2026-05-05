@@ -47,7 +47,7 @@ all:
       memory_mb: 4096
       disk_gb: 20
       vcpus: 2
-      distro: noble
+      distro: resolute
       networks:
         - bridge: virbr0
           model:
