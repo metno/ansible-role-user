@@ -14,6 +14,7 @@ Configure system and normal groups and users. This role configures the following
 Version
 -------
 
+* `4.0.0` --- Added support for ubuntu 26.04, removed support for ubuntu 20.04
 * `3.1.1` --- Updated molecule test setup
 * `3.1.0` --- Added support for RHEL10. The role now supports os_family = redhat.
 * `3.0.2` --- Move testing to Ansible Molecule
@@ -47,7 +48,7 @@ Requirements
 This role supports
 
 * RedHat Based OS, version 8,9,10
-* Ubuntu 20.04, 22.04, and 24.04
+* Ubuntu 22.04, 24.04, 26.04
 * CentOS 7
 * CentOS Stream 8
 
