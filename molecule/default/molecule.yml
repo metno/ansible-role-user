@@ -6,6 +6,7 @@ driver:
     login_cmd_template: "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -l {user} {address}"
 
 platforms:
+  - name: user-resolute
   - name: user-noble
   - name: user-jammy
   - name: user-alma8
